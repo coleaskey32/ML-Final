@@ -1,6 +1,6 @@
-from flask import Flask, redirect, request, session
+from flask import Flask, redirect, request, session, render_template
 import spotipy
-import spotipy.util as util
+import spotipy.oauth2 as oauth2  # Use the spotipy.oauth2 module instead of spotipy.util
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
@@ -11,6 +11,9 @@ client_secret = "9b0b2f7f198b4c198e2a59db2628dd88"
 redirect_uri =  "http://127.0.0.1:5000/callback"  # Match this with your Spotify app settings
 scope = "user-read-private user-read-email"  # Define the required scope for accessing user data
 
+# Create an instance of SpotifyOAuth with your credentials and scope
+sp_oauth = oauth2.SpotifyOAuth(client_id, client_secret, redirect_uri, scope=scope)  
+
 @app.route("/")
 def index():
     # Display a login button to initiate the Spotify authentication
@@ -19,14 +22,14 @@ def index():
 @app.route("/login")
 def login():
     # Redirect the user to Spotify's authentication page
-    auth_url = util.prompt_for_user_token("", scope, client_id, client_secret, redirect_uri)
+    auth_url = sp_oauth.get_authorize_url()  # Use the SpotifyOAuth instance to get the authorization URL
     return redirect(auth_url)
 
 @app.route("/callback")
 def callback():
     # Handle the callback from Spotify after user authorization
     code = request.args.get("code")
-    token_info = util.get_access_token(code, scope, client_id, client_secret, redirect_uri)
+    token_info = sp_oauth.get_access_token(code)  # Use the SpotifyOAuth instance to exchange the code for a token    session["token_info"] = token_info  # Store the token info in session
     session["token_info"] = token_info  # Store the token info in session
     return redirect("/profile")
 
