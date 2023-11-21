@@ -1,44 +1,46 @@
-from flask import Flask, render_template, redirect, request, session
+from flask import Flask, redirect, request, session
 import spotipy
 import spotipy.util as util
 
 app = Flask(__name__)
-app.secret_key = "some_secret_key" # you can generate a random secret key
+app.secret_key = "your_secret_key"
 
-# these are the credentials you get from registering your app on the Spotify Developer Dashboard
-client_id = "your_client_id"
-client_secret = "your_client_secret"
-redirect_uri = "http://localhost:8000/callback" # this should match the redirect URI you set on the dashboard
-scope = "user-top-read" # this is the scope you need for accessing the user's top artists
+# Spotify credentials
+client_id = "8f070f252f2c498d90dc3c5c09b30baf"
+client_secret = "9b0b2f7f198b4c198e2a59db2628dd88"
+redirect_uri =  "http://127.0.0.1:5000/callback"  # Match this with your Spotify app settings
+scope = "user-read-private user-read-email"  # Define the required scope for accessing user data
 
 @app.route("/")
 def index():
+    # Display a login button to initiate the Spotify authentication
     return render_template("index.html")
 
 @app.route("/login")
 def login():
-    # this will redirect the user to the Spotify authentication page
+    # Redirect the user to Spotify's authentication page
     auth_url = util.prompt_for_user_token("", scope, client_id, client_secret, redirect_uri)
     return redirect(auth_url)
 
 @app.route("/callback")
 def callback():
-    # this will receive the authorization code from Spotify and exchange it for an access token
+    # Handle the callback from Spotify after user authorization
     code = request.args.get("code")
     token_info = util.get_access_token(code, scope, client_id, client_secret, redirect_uri)
-    session["token_info"] = token_info # store the token info in the session
+    session["token_info"] = token_info  # Store the token info in session
     return redirect("/profile")
 
 @app.route("/profile")
 def profile():
-    # this will use the access token to make requests to the Spotify Web API
-    token_info = session.get("token_info", None) # get the token info from the session
+    # Extract user data using the access token
+    token_info = session.get("token_info", None)
     if token_info is None:
-        return redirect("/")
+        return "Authentication required"
+
     access_token = token_info["access_token"]
-    sp = spotipy.Spotify(auth=access_token) # create a Spotify client with the access token
-    top_artists = sp.current_user_top_artists() # get the user's top artists
-    return render_template("profile.html", top_artists=top_artists)
+    sp = spotipy.Spotify(auth=access_token)
+    user_data = sp.current_user()
+    return f"Hello, {user_data['display_name']}! Your email is {user_data['email']}"
 
 if __name__ == "__main__":
     app.run(debug=True)
