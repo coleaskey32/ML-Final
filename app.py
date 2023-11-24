@@ -43,7 +43,17 @@ def profile():
     access_token = token_info["access_token"]
     sp = spotipy.Spotify(auth=access_token)
     user_data = sp.current_user()
-    return f"Hello, {user_data['display_name']}! Your email is {user_data['email']}"
+    
+    playlists = sp.user_playlists(user_data['id'])
+
+    playlistNames = []
+    playlistImages = []
+    playlistTracks = []
+    
+    for playlist in playlists['items']:
+        print(playlist['name'], playlist['images'], playlist['tracks'], '\n')
+
+    return render_template("profile.html", playlists = playlists)
 
 if __name__ == "__main__":
     app.run(debug=True)
