@@ -10,14 +10,47 @@
         <title>GotAux</title>
     </head>
 
-    <body>
-        <h1>GotAux</h1>
-        <a href = "/login">
-            <button type="button" class="btn btn-outline-primary btn-lg btn-block">
-                Login with Spotify
-            </button>
-        </a>
+    <body class="d-flex flex-column justify-content-center align-items-center vh-100">
 
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <img src="https://thenounproject.com/api/private/icons/2490385/edit/?backgroundShape=SQUARE&backgroundShapeColor=%23000000&backgroundShapeOpacity=0&exportSize=752&flipX=false&flipY=false&foregroundColor=%23000000&foregroundOpacity=1&imageFormat=png&rotation=0" class="img_AI" alt="AI">
+            <h1 class="align-items-center mt-5 custom-h1 ">GotAux</h1>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Simple_Music.svg/600px-Simple_Music.svg.png" class="img_Music" alt="music">
+        </div>
+
+        <div class="d-flex justify-content-center align-items-center flex-grow-1 mb-5">
+            <a href="/login">
+                <button type="button" class="btn btn-outline-primary custom-btn">
+                    Login with Spotify
+                </button>
+            </a>
+        </div>
     </body>
 
 </html>
+
+
+<style>
+
+    .custom-btn {
+        font-size: 2rem; /* You can adjust this value to make the button larger */
+        padding: 25px 50px; /* Adjust padding for larger button size */
+        border-width: 3px; /* Increase the border width */
+    }
+    .custom-h1 {
+        font-size: 8rem; /* Adjust this value to increase/decrease font size */
+        padding-right: 50px;
+    }
+    body {
+        background-color: #64CAA6; /* Background color for the body */
+    }
+    .img_AI {
+        width: 250px; /* Set the desired width */
+        height: auto; /* Allow the height to adjust proportionally */
+    }
+    .img_Music {
+        width: 150px; /* Set the desired width */
+        height: auto; /* Allow the height to adjust proportionally */
+        margin-right: 65px;
+    }
+</style>
