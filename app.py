@@ -45,10 +45,6 @@ def profile():
     user_data = sp.current_user()
     
     playlists = sp.user_playlists(user_data['id'])
-
-    playlistNames = []
-    playlistImages = []
-    playlistTracks = []
     
     for playlist in playlists['items']:
         print(playlist['name'], playlist['images'], playlist['tracks'], '\n')

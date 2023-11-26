@@ -3,16 +3,17 @@
         <!-- Required meta tags -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css2?family=Baloo&display=swap" rel="stylesheet">
 
         <title>GotAux</title>
     </head>
 
     <body>
+        <h1 class="custom-h1">GotAux</h1>
 
-        <h1>Find Recommended Music</h1>
+        <h1 class="text-center">Find Recommended Music</h1>
 
         <div class="row justify-content-center pt-4">
 
@@ -32,10 +33,9 @@
                 <form>
                     <div class="form-group px-3">
 
-                      <label for="rangeSlider">Select a value:</label>
-
                       <input type="range" class="form-control-range" id="rangeSlider" min="25" max="100" step="1">
 
+                      <p>Selected value: <span id="selectedValue">50</span></p>
                     </div>
                 </form>
             </div>
@@ -44,7 +44,29 @@
 
         <button type="button" class="btn btn-outline-success btn-lg">Submit</button>
 
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+              var rangeSlider = document.getElementById("rangeSlider");
+              var selectedValue = document.getElementById("selectedValue");
+        
+              rangeSlider.addEventListener("input", function() {
+                selectedValue.innerText = rangeSlider.value;
+              });
+            });
+        </script>
 
     </body>
 
 </html>
+
+<style>
+    .custom-h1 {
+        font-size: 4rem; /* Adjust this value to increase/decrease font size */
+        padding-left: 25px;
+        padding-top: 25px;
+        font-family: 'Baloo', cursive;
+    }
+    body {
+        background-color: #64CAA6; /* Background color for the body */
+    }
+</style>
