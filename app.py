@@ -1,6 +1,7 @@
 from flask import Flask, redirect, request, session, render_template
 import spotipy
 import spotipy.oauth2 as oauth2  # Use the spotipy.oauth2 module instead of spotipy.util
+from models.model import recommendSongs 
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
@@ -50,6 +51,59 @@ def profile():
         print(playlist['name'], playlist['images'], playlist['tracks'], '\n')
 
     return render_template("profile.html", playlists = playlists)
+
+@app.route("/results", methods=['POST'])
+def results():
+    if request.method == 'POST':
+        desiredSongCount = request.form['slider']
+        playlist_selection = request.form['playlistSelection']
+
+        # Extract user data using the access token
+        token_info = session.get("token_info", None)
+        if token_info is None:
+            return "Authentication required"
+
+        access_token = token_info["access_token"]
+        sp = spotipy.Spotify(auth=access_token)
+        user_id = sp.current_user()['id']
+
+        # Retrieve user's playlists
+        playlists = sp.user_playlists(user_id)
+
+        # Find the selected playlist by name
+        selected_playlist = None
+        for playlist in playlists['items']:
+            if playlist['name'] == playlist_selection:
+                selected_playlist = playlist
+                break
+        
+        #If the desired playlist was found
+        if selected_playlist:
+            playlist_id = selected_playlist['id']
+
+            # Fetch tracks of the selected playlist
+            playlist_tracks = sp.playlist_tracks(playlist_id)
+
+            tracksURI = []
+
+            #Put songs from playlist in dictionary containing [name, artist, uri] of each song 
+            for track in playlist_tracks['items']:
+                tracksURI.append(track['track']['uri'][14:])
+
+            print("\nTRACKSURI ", tracksURI)
+
+            #Run model to fetch songs 
+            SongResults = recommendSongs(tracksURI, desiredSongCount)
+            print("\n\n\n\n\n")
+            print(SongResults)
+
+            return render_template("results.html", SongResults = SongResults)
+        
+        else:
+            return "Error: Playlist not found"
+
+    # Handle other cases if needed
+    return "Error: Invalid request"
 
 if __name__ == "__main__":
     app.run(debug=True)
